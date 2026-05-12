@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proxy</title>
+</head>
+<body>
+  <h1>Welcome to the Proxy</h1>
+  <form id="proxy-form">
+    <input type="url" id="url" placeholder="Target URL" required />
+    <button type="submit">Go</button>
+  </form>
+  <p id="error-message" style="color: red;"></p>
+
+  <script>
+    document.getElementById("proxy-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const url = document.getElementById("url").value.trim();
+      const token = localStorage.getItem("token");
+
+      const proxyUrl = `http://localhost:3000/proxy?url=${encodeURIComponent(url)}`;
+      const response = await fetch(proxyUrl, {
+        headers: { "Authorization": token }
+      });
+
+      if (response.ok) {
+        const proxiedData = await response.text();
+        document.write(proxiedData);
+      } else {
+        const error = await response.json();
+        document.getElementById("error-message").innerText = error.message;
+      }
+    });
+  </script>
+</body>
+</html>
